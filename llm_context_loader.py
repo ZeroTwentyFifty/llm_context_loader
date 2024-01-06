@@ -45,8 +45,16 @@ def scan_project_context():
             pyproject = tomllib.load(f)
         context["project_name"] = pyproject.get("tool", {}).get("poetry", {}).get("name") or os.path.basename(os.path.normpath(os.getcwd()))
         context["python_version"] = pyproject.get("tool", {}).get("poetry", {}).get("dependencies", {}).get("python")
+    else:
+        context["project_name"] = os.path.basename(os.path.normpath(os.getcwd()))
+
 
     # Check for other relevant files (customize as needed)
+    """
+    TODO: Currently will only get the dependencies from requirements.txt files, which is not as popular these days.
+    Really I only care about my own workflow for this tool, and so this should be working on pyproject.toml files.
+    Functionise this instead, and make it for pyproject.toml files.
+    """
     if os.path.exists("requirements.txt"):
         context["other_dependencies"] = []
         with open("requirements.txt") as f:
