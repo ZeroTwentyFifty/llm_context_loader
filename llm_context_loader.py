@@ -13,11 +13,11 @@ def build_repository_structure(root_dir="."):
         dict: A dictionary containing the repository structure.
     """
 
-    EXCLUDE_DIRS = [".git", "__pycache__", "pytest_cache"]  # Add directories to exclude
+    EXCLUDE_DIRS = [".git", "__pycache__", ".pytest_cache", ".idea"]
 
     repository_structure = {}
     for root, dirs, files in os.walk(root_dir):
-        dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]  # Filter excluded directories
+        dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
         dir_structure = root.replace(str(root_dir), "").split(os.sep)
 
         # Build structure recursively
