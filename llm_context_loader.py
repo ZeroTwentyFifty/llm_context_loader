@@ -30,6 +30,29 @@ def build_repository_structure(root_dir="."):
     return repository_structure
 
 
+def get_dependencies_from_pyproject(pyproject_path="pyproject.toml"):
+    """Extracts production and development dependencies from pyproject.toml.
+
+    Args:
+        pyproject_path: Path to the pyproject.toml file (defaults to "pyproject.toml").
+
+    Returns:
+        dict: A dictionary with "dependencies" and "dev_dependencies" keys.
+    """
+
+    with open(pyproject_path, "rb") as f:
+        pyproject = tomllib.load(f)
+
+    poetry_config = pyproject.get("tool", {}).get("poetry", {})
+    dependencies = poetry_config.get("dependencies", {})
+    dev_dependencies = poetry_config.get("group", {}).get("dev", {}).get("dependencies", {})
+
+    return {
+        "dependencies": list(dependencies.keys()),
+        "dev_dependencies": list(dev_dependencies.keys())
+    }
+
+
 def scan_project_context():
     """Scans the current directory for context-providing files and information.
 
@@ -48,20 +71,8 @@ def scan_project_context():
     else:
         context["project_name"] = os.path.basename(os.path.normpath(os.getcwd()))
 
-
-    # Check for other relevant files (customize as needed)
-    """
-    TODO: Currently will only get the dependencies from requirements.txt files, which is not as popular these days.
-    Really I only care about my own workflow for this tool, and so this should be working on pyproject.toml files.
-    Functionise this instead, and make it for pyproject.toml files.
-    """
-    if os.path.exists("requirements.txt"):
-        context["other_dependencies"] = []
-        with open("requirements.txt") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#"):
-                    context["other_dependencies"].append(line)
+    if os.path.exists("pyproject.toml"):
+        context.update(get_dependencies_from_pyproject())
 
     # Check for testing framework
     if os.path.exists("tests"):

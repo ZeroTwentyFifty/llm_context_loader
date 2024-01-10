@@ -2,9 +2,7 @@ import os
 
 import pytest
 
-from llm_context_loader import scan_project_context
-from llm_context_loader import build_repository_structure
-
+from llm_context_loader import scan_project_context, build_repository_structure
 
 
 @pytest.fixture(scope="function")
@@ -17,12 +15,14 @@ def test_project_dir(tmp_path):
         f.write("[tool.poetry]\nname = 'my-project'\n")
     return test_dir
 
+
 def test_project_name_from_pyproject(test_project_dir):
     """Uses the fixture to create a temporary directory for isolation."""
 
     os.chdir(test_project_dir)
     context = scan_project_context()
     assert context["project_name"] == "my-project"
+
 
 def test_project_name_fallback(test_project_dir):
     """Asserts the fallback behavior when pyproject.toml is missing."""
@@ -34,6 +34,7 @@ def test_project_name_fallback(test_project_dir):
     context = scan_project_context()
 
     assert context["project_name"] == os.path.basename(os.getcwd())  # Now correctly asserts against "test_project"
+
 
 def test_build_repository_structure(tmp_path):
     """Tests the build_repository_structure function."""
@@ -62,3 +63,26 @@ def test_build_repository_structure(tmp_path):
             "tests": {"files": ["test_something.py"]}
         }
     }
+
+
+def test_pyproject_dependencies(test_project_dir):
+    """Tests extracting dependencies from pyproject.toml."""
+
+    with open(test_project_dir / "pyproject.toml", "w") as f:
+        f.write("""
+[tool.poetry]
+name = "test-project"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+
+        """)
+
+    os.chdir(test_project_dir)
+    context = scan_project_context()
+
+    assert context["dependencies"] == ["python"]
+    assert context["dev_dependencies"] == ["pytest"]
