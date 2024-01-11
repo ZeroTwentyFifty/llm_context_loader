@@ -57,11 +57,9 @@ def test_build_repository_structure(tmp_path):
 
     # Assert the expected structure (excluding __pycache__)
     assert repo_structure == {
-        "": {
-            "files": ["README.md"],
-            "src": {"files": ["main.py"]},
-            "tests": {"files": ["test_something.py"]}
-        }
+        "files": ["README.md"],
+        "src": {"files": ["main.py"]},
+        "tests": {"files": ["test_something.py"]}
     }
 
 

@@ -23,7 +23,9 @@ def build_repository_structure(root_dir="."):
         # Build structure recursively
         current_level = repository_structure
         for subdir in dir_structure:
-            current_level = current_level.setdefault(subdir, {})
+            if subdir != "":
+                current_level[subdir] = {}
+                current_level = current_level[subdir]
 
         current_level["files"] = files
 
