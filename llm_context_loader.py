@@ -55,30 +55,18 @@ def get_dependencies_from_pyproject(pyproject_path="pyproject.toml"):
     }
 
 
-def build_context_description():
-    """Generates a description of the purpose of the collected context data.
-
-    Possible Alternative context_description:     context["context_explanation"] = "This context data provides
-    information about a Python project, including its dependencies, structure, and testing framework. It is designed
-    to help conversational LLMs understand the project's context when responding to prompts or generating code
-    related to it."
+def build_context_explanation():
+    """Generates a concise explanation of the purpose of the context data.
 
     Returns:
-        str: A description of the context data, suitable for an LLM.
+        str: A clear explanation of the context data, suitable for an LLM.
     """
 
     return """
-    This context data describes the structure and metadata of a Python project. 
-    It includes information about:
-
-    * **Project Name:** The name of the project.
-    * **Python Version:** The required Python version for the project.
-    * **Dependencies:** Python packages required for the project to function.
-    * **Dev Dependencies:** Python packages required for development and testing.
-    * **Repository Structure:** The file and directory structure of the project.
-
-    This data can be used to provide background information to an LLM when 
-    asking questions or giving instructions related to the project.
+    This context data describes the essential details of a Python project, 
+    including its name, dependencies, structure, and Python version. 
+    It is intended to help conversational LLMs better understand the project's 
+    background when you ask questions or provide instructions related to the code.
     """
 
 
@@ -91,7 +79,7 @@ def scan_project_context():
 
     context = {}
 
-    context["context_description"] = build_context_description()
+    context["context_explanation"] = build_context_explanation()
 
     # Check for pyproject.toml
     if os.path.exists("pyproject.toml"):
