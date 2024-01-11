@@ -84,3 +84,14 @@ pytest = "^7.4.3"
 
     assert context["dependencies"] == ["python"]
     assert context["dev_dependencies"] == ["pytest"]
+
+
+def test_context_description(test_project_dir):
+    """Tests the generated context description."""
+
+    os.chdir(test_project_dir)
+    context = scan_project_context()
+
+    assert "This context data describes" in context["context_description"]
+    assert "Python project" in context["context_description"]
+    assert "Dependencies" in context["context_description"]  # Or other relevant keyword
